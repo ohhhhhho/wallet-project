@@ -1,24 +1,23 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import './style/index.scss';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
+import Home from './view/Home';
+import Wallet from './view/Wallet';
+import SetPassword from './view/SetPassword';
+// import ProtectedRoute from './style/component/ProtectedRoute';
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div id='content' className="App">
+        <BrowserRouter> 
+          <Routes>
+            <Route path="/" element={<Home />} />
+            <Route path="/set-password" element={<SetPassword />} />
+            <Route path="/wallet" element={<Wallet />} />
+            {/* <Route path="/wallet" element={<ProtectedRoute userInfo={!!sessionStorage.getItem('userInfo')} />}>
+              <Route index element={<Wallet />} />
+            </Route> */}
+          </Routes>
+        </BrowserRouter>
     </div>
   );
 }
