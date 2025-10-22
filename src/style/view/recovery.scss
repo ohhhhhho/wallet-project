@@ -1,0 +1,13 @@
+#recovery{
+    .section{
+        .inner{
+            .mnemonic{
+                @include textBody(textBody3);
+                word-break: keep-all;
+            }
+            .button-area{
+                padding-top: $global-horizontal-padding;
+            }
+        }
+    }
+}

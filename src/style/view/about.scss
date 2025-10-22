@@ -1,0 +1,21 @@
+#about{
+    .section{
+        .inner{
+            ul{
+                li{
+                    h6{
+                        @include textSubTitle(textSubTitle4)
+                    }
+                    p{
+                        margin-top: 5px;
+                        color: $grey;
+                        word-break: break-word;
+                    }
+                    &:not(:first-child){
+                        margin-top: 10px;
+                    }
+                }
+            }
+        }
+    }
+}
