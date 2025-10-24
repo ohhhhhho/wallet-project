@@ -13,9 +13,9 @@ React, TypeScript, Ethers.js, Crypto-js, UUID
 ## 프로젝트 구조
 1. 메인 화면 - Home.tsx
 2. 지갑 생성 - SignUp.tsx
-    2.1. 지갑 생성 완료 - Wallet.tsx
-    2.2. 지갑 정보 - About.tsx
-    2.3. 니모닉 정보 - Recovery.tsx
+2.1. 지갑 생성 완료 - Wallet.tsx
+2.2. 지갑 정보 - About.tsx
+2.3. 니모닉 정보 - Recovery.tsx
 3. 기존 사용자 로그인 - Login.tsx
 4. 지갑 복구 - Import.tsx
 
