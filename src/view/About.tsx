@@ -1,6 +1,7 @@
 import { useNavigate } from "react-router-dom";
 import { decryptUserData } from "../utils/crypto"
 import { useEffect, useState } from "react";
+import { getWalletData } from "../utils/walletStorage";
 
 interface WalletInfo {
     publicKey:string;
@@ -14,7 +15,7 @@ export default function AboutWallet() {
         privateKey:""
     })
     useEffect(() => {
-        const walletData = localStorage.getItem('wallet_data');
+        const walletData = getWalletData();
         if(!walletData){
             navigate('/');
         }else{
@@ -24,20 +25,20 @@ export default function AboutWallet() {
                 privateKey:decryptUserData(parseData.privateKey)
             });
         }
-    },[navigate]);
+    },[]);
     
   return (
     <main id="about">
         <section className="section">
             <div className="inner">
-                <ul>
-                    <li>
-                        <h6>publicKey : </h6>
-                        <p>{walletInfo.publicKey}</p>
+                <ul className="list">
+                    <li className="list__item">
+                        <span className="list__item__label">publicKey : </span>
+                        <p className="list__item__value">{walletInfo.publicKey}</p>
                     </li>
-                    <li>
-                        <h6>privateKey : </h6>
-                        <p>{walletInfo.privateKey}</p>
+                    <li className="list__item">
+                        <span className="list__item__label">privateKey : </span>
+                        <p className="list__item__value">{walletInfo.privateKey}</p>
                     </li>
                 </ul>
             </div>

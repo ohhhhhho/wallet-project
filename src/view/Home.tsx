@@ -1,22 +1,23 @@
 
 export default function Home() {
+    const walletData = localStorage.getItem('wallet_data');
   return (
     <main id="home">
         <section className="section">
-            <div className='inner'>
-                <div className="logo-wrap">
-                    <h1 className="logo">
+            <div className="inner">
+                <div className="logo">
+                    <h1 className="logo__title">
                         <span className="blind">Creditcoin</span>
                     </h1>
-                    <p className="">Welcome to the
+                    <p className="logo__subtitle">Welcome to the
                         Credit Wallet!
                     </p>
                 </div>
-                <div className="link-wrap button-area">
-                    <a href='/signup' className='button-common'>
-                        <span>CreateWallet</span>
+                <div className="button-area">
+                    <a href="/signup" className="button-common">
+                        <span>{walletData ? 'Login' : 'CreateWallet'}</span>
                     </a>
-                    <a href='/import' className='link'>
+                    <a href="/import" className="button-import">
                         <span>I already have a wallet</span>
                     </a>
                 </div>

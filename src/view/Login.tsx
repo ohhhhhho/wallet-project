@@ -3,12 +3,9 @@ import { useNavigate } from "react-router-dom"
 import { decryptUserData, encryptUserData } from "../utils/crypto";
 import PasswordPad from "../component/PasswordPad";
 import { v4 as uuidv4 } from 'uuid';
+import { getWalletData, setWalletData } from "../utils/walletStorage";
+import { UserWithActive } from "../types/type";
 
-interface UserInfo {
-  id:string;
-  password:string;
-  createdAt:string;
-}
 
 export default function Login() {
     const navigate = useNavigate();
@@ -23,7 +20,7 @@ export default function Login() {
     }
 
     const passwordCheck = (password:string) => {
-        const walletData = localStorage.getItem('wallet_data');
+        const walletData = getWalletData();
       
         if(!walletData){
             setErrorMsg('등록된 계정이 없습니다.');
@@ -32,22 +29,22 @@ export default function Login() {
         };
 
         const parseData = JSON.parse(walletData);
-        const parsePassword = decryptUserData(parseData.password);
-        const parseMnemonic = decryptUserData(parseData.mnemonic);
+        const decryptedPassword = decryptUserData(parseData.password);
+        const decryptedMnemonic = decryptUserData(parseData.mnemonic);
         //import로 생성된 지갑
-        if(walletData && parseMnemonic && parseData.isImport && !parsePassword){
-          const userInfo:UserInfo = {
+        if(walletData && decryptedMnemonic && parseData.isImport && !decryptedPassword){
+          const userInfo:UserWithActive = {
           ...parseData,
           id: encryptUserData(uuidv4()),
           password: encryptUserData(password),
           createdAt: encryptUserData(new Date().toISOString()),
           active:true
           };
-        localStorage.setItem('wallet_data', JSON.stringify(userInfo));
+        setWalletData(userInfo);
         navigate('/wallet');
         }
         //localStorage에 있는 비밀번호와 비교
-        if(parsePassword !== password){
+        if(decryptedPassword !== password){
           setErrorMsg('Passcode do not match. Try again.');
           inputReset();
           return;

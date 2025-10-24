@@ -1,12 +1,12 @@
 #wallet{
     .balance{
         .inner{
-            .user-info{
+            .info{
                 display: flex;
                 justify-content: flex-start;
                 align-items: flex-start;
                 flex-direction: column;
-                p{
+                &__desc{
                     @include textBody(textBody1);
                     color:$darkGrey;
                 }

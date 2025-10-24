@@ -1,36 +1,30 @@
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { getWalletData } from "../utils/walletStorage";
 
 interface PasswordPadProps{
     passwordLength?:number;
     complete:(password:string) => void;
     errorMsg?:string;
-    isLoading?:boolean;
     reset?:boolean;
 }
-const NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, 0];
-
-const passPad = ():(number | string)[]    => {
-    const numberPad: (number | string)[] = [...NUMBERS];
-    numberPad.splice(numberPad.length - 1, 0, 'blank');
-    numberPad.splice(numberPad.length, 0, 'delete');
-    return numberPad;  
-}  
+const NUMBERS = [1, 2, 3, 4, 5, 6, 7, 8, 9, "blank", 0, "delete"];
 
 export default function PasswordPad({passwordLength = 6,
   errorMsg,
   complete,
-  isLoading = false,
   reset = false
 }:PasswordPadProps) {
-    const [input, setInput] = useState<string>('');  
-    const [numbers] = useState<(number | string)[]>(passPad());
+    const [input, setInput] = useState<string>("");  
+    const [numbers] = useState<(number | string)[]>(NUMBERS);
     const [isComplete, setIsComplete] = useState<boolean>(false);
     const navigate = useNavigate();
+    const walletData = getWalletData();
+    const parseData = walletData ? JSON.parse(walletData) : null;
 
     useEffect(() => {
       if(reset){
-          setInput('');
+          setInput("");
           setIsComplete(false);
       }
     },[reset])
@@ -52,7 +46,7 @@ export default function PasswordPad({passwordLength = 6,
     };
 
     const onClickBack = () => {
-      setInput('');
+      setInput("");
       setIsComplete(false);
       navigate("/");
     };
@@ -62,7 +56,7 @@ export default function PasswordPad({passwordLength = 6,
       <div className="inner">
         <div className="heading">
           <button
-            disabled={isComplete || isLoading}
+            disabled={isComplete}
             className="return-button"
             onClick={onClickBack}
             aria-label="뒤로가기"
@@ -71,48 +65,55 @@ export default function PasswordPad({passwordLength = 6,
           </button>
         </div>
 
-        <div className="indicator-wrap">
-          <h2 className="title">Please enter your passcode</h2>
-          <div className="row-item">
-            {[...Array(passwordLength)].map((_, index) => (
-              <div
-                key={index}
-                className={`dot ${input.length > index ? 'active' : ''}`}
-              />
-            ))}
+        <div className="password-check">
+          {parseData?.id ? (
+            <h2 className="password-check__login-title">Please enter your passcode</h2>
+          ):(
+            <div className="password-check__signup">
+              <h2 className="title">Create passcode</h2>
+              <p className="desc">This is the passcode used when opening a wallet or transacting on-chain.</p>
+            </div>
+          )}
+          <div className="password-check__wrap">
+            <div className="password-check__wrap__item">
+              {[...Array(passwordLength)].map((_, idx) => (
+                <div
+                  key={idx}
+                  className={`dot ${input.length > idx ? 'active' : ''}`}
+                />
+              ))}
+            </div>
+            {errorMsg && <span className="error">{errorMsg}</span>}
           </div>
-          {errorMsg && <span className="error">{errorMsg}</span>}
         </div>
 
-        <div className="numberpad-wrap">
-          <div className="grid">
-            {numbers.map((item, index) => {
-              if (item === 'blank') {
-                return <div key={index} className="blank" />;
-              } else if (item === 'delete') {
-                return (
-                  <button
-                    key={index}
-                    disabled={isComplete || isLoading}
-                    className="button-delete"
-                    onClick={onClickDelete}
-                  >
-                    <span className="blind">삭제</span>
-                  </button>
-                );
-              } else {
-                return (
-                  <button
-                    key={index}
-                    disabled={isComplete || isLoading}
-                    className="button-pad"
-                    onClick={() => onClickPad(item as number)}
-                  >
-                    {item}
-                  </button>
-                );
-              }
-            })}
+        <div className="password-input">
+          <div className="password-input__box">
+            {numbers.map((item, idx) => item === 'blank' ? 
+              (
+                <div key={idx} className="blank" />
+              ): item === 'delete' ?
+              (
+                <button
+                  key={idx}
+                  disabled={isComplete}
+                  className="button-delete"
+                  onClick={onClickDelete}
+                >
+                  <span className="blind">삭제</span>
+                </button>
+              ):
+              (
+                <button
+                  key={idx}
+                  disabled={isComplete}
+                  className="button-pad"
+                  onClick={() => onClickPad(item as number)}
+                >
+                  {item}
+                </button>
+              )
+            )}
           </div>
         </div>
       </div>

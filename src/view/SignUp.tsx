@@ -3,32 +3,28 @@ import { encryptUserData } from "../utils/crypto";
 import { v4 as uuidv4 } from 'uuid';
 import PasswordPad from "../component/PasswordPad";
 import { useEffect } from "react";
-
-interface UserInfo {
-  id:string;
-  password:string;
-  createdAt:string;
-}
+import { getWalletData, setWalletData } from "../utils/walletStorage";
+import { UserBase } from "../types/type";
 
 export default function SignUp() {
   const navigate = useNavigate();
 
   useEffect(() => {
-    const walletData = localStorage.getItem('wallet_data');
+    const walletData = getWalletData();
     if(walletData){
         navigate('/login')
       }
-  },[navigate])
+  },[])
 
   const passwordCheck = (password:string) => {
-    const walletData = localStorage.getItem('wallet_data');
+    const walletData = getWalletData();
     if(!walletData){
-        const userInfo:UserInfo = {
+        const userInfo:UserBase = {
           id: encryptUserData(uuidv4()),
           password: encryptUserData(password),
           createdAt: encryptUserData(new Date().toISOString()),
         };
-        localStorage.setItem('wallet_data', JSON.stringify(userInfo));
+        setWalletData(userInfo)
         navigate('/wallet');
     }else {
       navigate('/login')

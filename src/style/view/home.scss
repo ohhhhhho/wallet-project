@@ -10,12 +10,12 @@
             justify-content: center;
             flex-direction: column;
             gap: 40px;
-            .logo-wrap{
+            .logo{
                 display: flex;
                 align-items: center;
                 justify-content: center;
                 flex-direction: column;
-                .logo{
+                &__title{
                     animation: logoEffect 0.7s alternate cubic-bezier(0.95, 0.05, 0.795, 0.035) infinite;
                     &::before{
                         content: '';
@@ -25,13 +25,13 @@
                         background: url('../../../src/asset/image/symbol.svg') 100% no-repeat;
                     }
                 }
-                p{
+                &__subtitle{
                     max-width: 220px;
                     text-align: center;
                     @include textSubTitle(textSubTitle1)
                 }
             }
-            .link-wrap{
+            .button-area{
                 position: absolute;
                 left: 50%;
                 bottom:100px;
@@ -42,7 +42,7 @@
                 align-items: center;
                 justify-content: center;
                 gap:20px;
-                .link{
+                .button-import{
                     position: relative;
                     @include textSubTitle(textSubTitle4);
                     &:hover{

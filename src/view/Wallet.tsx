@@ -1,58 +1,55 @@
 import { useEffect } from "react";
 import { decryptUserData, encryptUserData } from "../utils/crypto";
-import { HDNodeWallet, Mnemonic } from "ethers";
+import { HDNodeWallet } from "ethers";
 import { useNavigate } from "react-router-dom";
+import { encryptKeys, getWalletData, restoreWallet, setWalletData } from "../utils/walletStorage";
 
 export default function Wallet() {
   const navigate = useNavigate();
   useEffect(() => {
-    const walletData = localStorage.getItem('wallet_data');
+    const walletData = getWalletData();
     if (!walletData){ 
       navigate('/');
       return
     }
     
     const parseData = JSON.parse(walletData);
-    const parsePassword = decryptUserData(parseData.password);
+    const decryptedPassword = decryptUserData(parseData.password);
 
     //import로 생성된 지갑
     if(walletData && parseData.mnemonic && parseData.active){
-      const parseMnemonic = decryptUserData(parseData.mnemonic);
-      const mnemonic = Mnemonic.fromPhrase(parseMnemonic);
-      const keys = HDNodeWallet.fromMnemonic(mnemonic);
+      const decryptedMnemonic = decryptUserData(parseData.mnemonic);
+      const wallet = restoreWallet(decryptedMnemonic)
+      const encryptedKey = encryptKeys(wallet)
       const updatedState = {
         ...parseData,
-        publicKey: encryptUserData(keys.publicKey),
-        privateKey: encryptUserData(keys.privateKey),
-        address: encryptUserData(keys.address),
+        ...encryptedKey
       }
-    localStorage.setItem('wallet_data',JSON.stringify(updatedState));
+      setWalletData(updatedState);
     };
     //일반 지갑 생성
     if(!parseData.mnemonic){
-      const createMnemonic = HDNodeWallet.createRandom(parsePassword);
-      const mnemonicPharse = createMnemonic.mnemonic?.phrase || ""
-      const mnemonic = Mnemonic.fromPhrase(mnemonicPharse);
-      const keys = HDNodeWallet.fromMnemonic(mnemonic);
+      const newWallet = HDNodeWallet.createRandom(decryptedPassword);
+      const decryptedMnemonic = newWallet.mnemonic?.phrase || ""
+      const wallet = restoreWallet(decryptedMnemonic)
+      const encryptedKey = encryptKeys(wallet)
 
       const updatedState = {
         ...parseData,
-        mnemonic: encryptUserData(mnemonicPharse),
-        publicKey: encryptUserData(keys.publicKey),
-        privateKey: encryptUserData(keys.privateKey),
-        address: encryptUserData(keys.address),
+        mnemonic: encryptUserData(decryptedMnemonic),
+        ...encryptedKey
       }
-      localStorage.setItem('wallet_data',JSON.stringify(updatedState));
+      setWalletData(updatedState);
     }
-}, [navigate]);
+}, []);
 
   return (
     <main id="wallet">
       <section className="section balance">
         <div className="inner">
-            <div className="user-info">
-              <p>Total CTC Balance</p>
-              <h3>0 CTC</h3>
+            <div className="info">
+              <p className="info__desc">Total CTC Balance</p>
+              <h3 className="info__total">0 CTC</h3>
             </div>
             <div className="button-area">
               <a href="/about" className="button-common"><span>About Wallet</span></a>
