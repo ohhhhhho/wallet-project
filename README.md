@@ -20,5 +20,5 @@ React, TypeScript, Ethers.js, Crypto-js, UUID
 4. 지갑 복구 - Import.tsx
 
 ## 실행 방법
-npm install
+npm install  
 npm start
